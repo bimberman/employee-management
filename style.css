@@ -5,3 +5,11 @@ header.container{
   border: 3px solid black;
   margin: auto;
 }
+td.table-data{
+  border-left: 3px solid black;
+}
+th.table-data{
+  border: 3px solid black;
+  background-color: rgb(102, 102, 102);
+  color: white;
+}
