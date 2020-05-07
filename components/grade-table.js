@@ -9,24 +9,23 @@ class GradeTable{
       tbody.removeChild(tbody.lastChild);
     }
 
-    let tr = [];
-    let tdNames = [];
-    let tdCourse = [];
-    let tdGrade = [];
-
     for (let dataIndex = 0; dataIndex < grades.length; dataIndex++) {
-      tr.push(document.createElement("tr"));
-      tdCourse.push(document.createElement("td"));
-      tdNames.push(document.createElement("td"));
-      tdGrade.push(document.createElement("td"));
+      let tr = document.createElement("tr");
+      let tdNames = document.createElement("td");
+      let tdCourse = document.createElement("td");
+      let tdGrade = document.createElement("td");
 
-      tdNames[(dataIndex)].textContent = grades[dataIndex].name;
-      tdCourse[(dataIndex)].textContent = grades[dataIndex].course;
-      tdGrade[dataIndex].textContent = grades[dataIndex].grade;
+      tdNames.classList.add("table-data");
+      tdCourse.classList.add("table-data");
+      tdGrade.classList.add("table-data");
 
-      tr[dataIndex].append(tdNames[dataIndex], tdCourse[dataIndex], tdGrade[dataIndex]);
+      tdNames.textContent = grades[dataIndex].name;
+      tdCourse.textContent = grades[dataIndex].course;
+      tdGrade.textContent = grades[dataIndex].grade;
 
-      tbody.append(tr[dataIndex]);
+      tr.append(tdNames, tdCourse, tdGrade);
+
+      tbody.append(tr);
     }
   }
 }
