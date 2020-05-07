@@ -6,18 +6,18 @@ class GradeTable{
   updateGrades(grades){
     let tbody = this.tableElement.querySelector("tbody");
 
-    if(grades){
-      this.noGradesElement.classList.add(".d-none")
-      console.log(grades);
-      while (tbody.firstChild){
-        tbody.removeChild(tbody.lastChild);
-      }
+    while (tbody.firstChild) {
+      tbody.removeChild(tbody.lastChild);
+    }
+
+    if(grades && grades.length){
+      this.noGradesElement.classList.add("d-none")
 
       for (let dataIndex = 0; dataIndex < grades.length; dataIndex++) {
         tbody.append(this.renderGradeRow(grades[dataIndex], this.deleteGrade));
       }
     } else {
-      this.noGradesElement.classList.remove(".d-none")
+      this.noGradesElement.classList.remove("d-none")
     }
   }
   onDeleteClick(deleteGrade){
@@ -36,8 +36,7 @@ class GradeTable{
     tdGrade.classList.add("table-data");
     tdDelete.classList.add("table-data", "justify-content-center");
     deleteButton.classList.add("btn", "btn-danger");
-
-    deleteButton.addEventListener("click", deleteGrade(data.id));
+    deleteButton.addEventListener("click", function () { deleteGrade(data.id)});
 
     tdNames.textContent = data.name;
     tdCourse.textContent = data.course;

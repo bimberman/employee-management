@@ -1,5 +1,7 @@
 class App {
   constructor(gradeTable, pageHeader, gradeForm){
+    this.baseUrl = "https://sgt.lfzprototypes.com/";
+    this.path = "api/grades/";
     this.apikey = "GFaE89M3";
     this.gradeTable = gradeTable;
     this.pageHeader = pageHeader;
@@ -18,13 +20,12 @@ class App {
     console.error(error);
   }
   handleGetGradesSuccess (grades){
-    console.log(grades);
     this.gradeTable.updateGrades(grades);
     this.pageHeader.updateAverage(this.computeAvg(grades));
   }
   getGrades(){
     $.ajax({
-      url: "https://sgt.lfzprototypes.com/api/grades",
+      url: this.baseUrl+this.path,
       method: "GET",
       headers: {
         "X-Access-Token": this.apikey
@@ -51,7 +52,7 @@ class App {
   }
   createGrade(name, course, grade) {
     $.ajax({
-      url: "https://sgt.lfzprototypes.com/api/grades",
+      url: this.baseUrl + this.path,
       method: "POST",
       headers: {
         "X-Access-Token": this.apikey
@@ -72,7 +73,15 @@ class App {
     this.getGrades();
   }
   deleteGrade(id){
-    console.log(id);
+    $.ajax({
+      url: this.baseUrl + this.path + id,
+      method: "DELETE",
+      headers: {
+        "X-Access-Token": this.apikey
+      },
+      success: this.handleDeleteGradeSuccess,
+      error: this.handleDeleteGradeError
+    })
   }
   handleDeleteGradeError(error){
     console.error(error);
