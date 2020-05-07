@@ -3,7 +3,6 @@ header.container{
 }
 .table{
   border: 3px solid black;
-  margin: auto;
 }
 td.table-data{
   border-left: 3px solid black;
@@ -13,3 +12,8 @@ th.table-data{
   background-color: rgb(102, 102, 102);
   color: white;
 }
+/* .input-group-text{
+  background-color: white;
+  border: none;
+  align-items: center;
+} */
