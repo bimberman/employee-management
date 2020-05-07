@@ -5,28 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SGT</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="container col-10" id="header">
-    <div class="row col-12">
-      <h1 class="col-9 text-left">Student Grade Table</h1>
-      <h3 class="col-3 text-right">Average Grade <span class="badge badge-secondary"></span></h3>
+  <header class="container col-11 " id="header">
+    <div class="row col-12 justify-content-around">
+      <h1 class="col-8 text-left">Student Grade Table</h1>
+      <h3 class="col-4 text-right">Average Grade <span class="badge badge-secondary"></span></h3>
     </div>
   </header>
-  <table class="table table-bordered table-striped col-10" id="grades-table">
-    <thead>
-        <th class="table-data" scope="col">Student Name</th>
-        <th class="table-data" scope="col">Course</th>
-        <th class="table-data" scope="col">Grade</th>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
+  <div class="container col-12">
+    <div class="row justify-content-around">
+      <div class="col-7">
+        <table class="table table-bordered table-striped col-12" id="grades-table">
+          <thead>
+            <th class="table-data" scope="col">Student Name</th>
+            <th class="table-data" scope="col">Course</th>
+            <th class="table-data" scope="col">Grade</th>
+            <th class="table-data" scope="col">Operations</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+        <p class="d-none" id="hidden-pEle">No Grades Recorded</p>
+      </div>
+      <form class="col-3" id="form">
+        <div class="form-group">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <i class="input-group-text fas fa-user" aria-hidden="true" style="font-size: 1.4rem;"></i>
+            </div>
+            <input type="text" class="form-control" placeholder="Name" name="name">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <i class="input-group-text fas fa-list-alt" aria-hidden="true" style="font-size: 1.3rem;"></i>
+            </div>
+            <input type="text" class="form-control" placeholder="Course" name="course">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <i class="input-group-text fas fa-graduation-cap" aria-hidden="true" style="font-size: 1.1rem;"></i>
+            </div>
+            <input type="text" class="form-control" placeholder="Grade" name="grade">
+          </div>
+          <div class="input-group mb-3 justify-content-end">
+            <button type="submit" class="btn btn-outline-dark mr-4 col-2">Add</button>
+            <button type="reset" class="btn btn-outline-dark col-3">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
   <script src="./components/app.js"></script>
   <script src="./components/grade-table.js"></script>
   <script src="./components/page-header.js"></script>
+  <script src="./components/grade-form.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
