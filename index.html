@@ -17,15 +17,19 @@
   </header>
   <div class="container col-12">
     <div class="row justify-content-around">
-      <table class="table table-bordered table-striped col-6" id="grades-table">
-        <thead>
-          <th class="table-data" scope="col">Student Name</th>
-          <th class="table-data" scope="col">Course</th>
-          <th class="table-data" scope="col">Grade</th>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+      <div class="col-7">
+        <table class="table table-bordered table-striped col-12" id="grades-table">
+          <thead>
+            <th class="table-data" scope="col">Student Name</th>
+            <th class="table-data" scope="col">Course</th>
+            <th class="table-data" scope="col">Grade</th>
+            <th class="table-data" scope="col">Operations</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+        <p class="d-none" id="hidden-pEle">No Grades Recorded</p>
+      </div>
       <form class="col-3" id="form">
         <div class="form-group">
           <div class="input-group mb-3">

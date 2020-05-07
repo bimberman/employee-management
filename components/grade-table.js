@@ -1,31 +1,51 @@
 class GradeTable{
-  constructor(tableElement){
+  constructor(tableElement, noGradesElement){
     this.tableElement = tableElement;
+    this.noGradesElement = noGradesElement;
   }
   updateGrades(grades){
-    console.log(grades);
     let tbody = this.tableElement.querySelector("tbody");
-    while (tbody.firstChild){
-      tbody.removeChild(tbody.lastChild);
+
+    if(grades){
+      this.noGradesElement.classList.add(".d-none")
+      console.log(grades);
+      while (tbody.firstChild){
+        tbody.removeChild(tbody.lastChild);
+      }
+
+      for (let dataIndex = 0; dataIndex < grades.length; dataIndex++) {
+        tbody.append(this.renderGradeRow(grades[dataIndex], this.deleteGrade));
+      }
+    } else {
+      this.noGradesElement.classList.remove(".d-none")
     }
+  }
+  onDeleteClick(deleteGrade){
+    this.deleteGrade = deleteGrade;
+  }
+  renderGradeRow(data, deleteGrade){
+    let tr = document.createElement("tr");
+    let tdNames = document.createElement("td");
+    let tdCourse = document.createElement("td");
+    let tdGrade = document.createElement("td");
+    let tdDelete = document.createElement("td");
+    let deleteButton = document.createElement("button");
 
-    for (let dataIndex = 0; dataIndex < grades.length; dataIndex++) {
-      let tr = document.createElement("tr");
-      let tdNames = document.createElement("td");
-      let tdCourse = document.createElement("td");
-      let tdGrade = document.createElement("td");
+    tdNames.classList.add("table-data");
+    tdCourse.classList.add("table-data");
+    tdGrade.classList.add("table-data");
+    tdDelete.classList.add("table-data", "justify-content-center");
+    deleteButton.classList.add("btn", "btn-danger");
 
-      tdNames.classList.add("table-data");
-      tdCourse.classList.add("table-data");
-      tdGrade.classList.add("table-data");
+    deleteButton.addEventListener("click", deleteGrade(data.id));
 
-      tdNames.textContent = grades[dataIndex].name;
-      tdCourse.textContent = grades[dataIndex].course;
-      tdGrade.textContent = grades[dataIndex].grade;
+    tdNames.textContent = data.name;
+    tdCourse.textContent = data.course;
+    tdGrade.textContent = data.grade;
+    deleteButton.textContent = "DELETE";
 
-      tr.append(tdNames, tdCourse, tdGrade);
-
-      tbody.append(tr);
-    }
+    tdDelete.appendChild(deleteButton);
+    tr.append(tdNames, tdCourse, tdGrade, tdDelete);
+    return tr;
   }
 }
