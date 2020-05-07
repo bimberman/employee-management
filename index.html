@@ -8,10 +8,13 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Student Grade Table</h1>
+  <header class="container col-10" id="header">
+    <div class="row col-12">
+      <h1 class="col-9 text-left">Student Grade Table</h1>
+      <h3 class="col-3 text-right">Average Grade <span class="badge badge-secondary">84</span></h3>
+    </div>
   </header>
-  <table class="table table-bordered table-striped" id="grades-table">
+  <table class="table table-bordered table-striped col-10" id="grades-table">
     <thead class="thead-light">
         <th scope="col">Student Name</th>
         <th scope="col">Course</th>
@@ -23,6 +26,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
   <script src="./components/app.js"></script>
   <script src="./components/grade-table.js"></script>
+  <script src="./components/page-header.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
