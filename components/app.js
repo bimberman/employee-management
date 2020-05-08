@@ -40,7 +40,7 @@ class App {
     let i = 0
     if (gradesObj) {
       while (gradesObj[i]) {
-        grades += gradesObj[i].grade;
+        grades += Number(gradesObj[i].grade);
         i++;
       }
     }
@@ -48,6 +48,32 @@ class App {
   }
   editGrade(name, course, grade, id){
     this.gradeForm.editGradeForm(name, course, grade, id);
+  }
+  addAllGrades(grades){
+    this.grades = grades;
+  }
+  addAGrade(grade){
+    this.grades.push(grade);
+  }
+  deleteAGrade(id){
+    if(this.grades){
+      for (let i = 0; i < this.grades.length; i++) {
+        if(this.grades[i].id===id){
+          this.grades.splice(i,1);
+        }
+      }
+    }
+  }
+  updateAGrade(name, course, grade, id){
+    if (this.grades) {
+      for (let i = 0; i < this.grades.length; i++) {
+        if (this.grades[i].id === id) {
+          this.grades[i].name = name;
+          this.grades[i].course = course;
+          this.grades[i].grade = grade;
+        }
+      }
+    }
   }
 
   getGrades() {
@@ -65,6 +91,7 @@ class App {
     console.error(error);
   }
   handleGetGradesSuccess (grades){
+    this.addAllGrades(grades);
     this.gradeTable.updateGrades(grades);
     this.pageHeader.updateAverage(this.computeAvg(grades));
   }
@@ -88,11 +115,14 @@ class App {
   handleCreateGradeError(error){
     console.error(error);
   }
-  handleCreateGradeSuccess(){
-    this.getGrades();
+  handleCreateGradeSuccess(grade){
+    this.addAGrade(grade);
+    this.gradeTable.updateGrades(this.grades);
+    this.pageHeader.updateAverage(this.computeAvg(this.grades));
   }
 
   deleteGrade(id){
+    this.id = id;
     $.ajax({
       url: this.baseUrl + this.path + id,
       method: "DELETE",
@@ -107,7 +137,10 @@ class App {
     console.error(error);
   }
   handleDeleteGradeSuccess(){
-    this.getGrades();
+    this.deleteAGrade(this.id);
+    this.id = null;
+    this.gradeTable.updateGrades(this.grades);
+    this.pageHeader.updateAverage(this.computeAvg(this.grades));
   }
 
   updateGrade(name, course, grade, id) {
@@ -129,7 +162,9 @@ class App {
   handleUpdateGradeError(error) {
     console.error(error);
   }
-  handleUpdateGradeSuccess() {
-    this.getGrades();
+  handleUpdateGradeSuccess(grade) {
+    this.updateAGrade(grade.name, grade.course, grade.grade, grade.id);
+    this.gradeTable.updateGrades(this.grades);
+    this.pageHeader.updateAverage(this.computeAvg(this.grades));
   }
 }

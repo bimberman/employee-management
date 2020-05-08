@@ -17,7 +17,7 @@ class GradeTable{
         tbody.append(this.renderGradeRow(grades[dataIndex], this.deleteGrade, this.editGrade));
       }
     } else {
-      this.noGradesElement.classList.remove("d-none")
+      this.noGradesElement.classList.remove("d-none");
     }
   }
   onDeleteClick(deleteGrade){

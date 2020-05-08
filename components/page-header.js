@@ -4,7 +4,7 @@ class PageHeader{
   }
   updateAverage(newAverage){
     if(newAverage){
-      this.headerElement.querySelector(".badge").textContent = newAverage;
+      this.headerElement.querySelector(".badge").textContent = Number(newAverage).toFixed(1);
     } else {
       this.headerElement.querySelector(".badge").textContent = "N/A";
     }
