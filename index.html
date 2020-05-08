@@ -6,24 +6,23 @@
   <title>SGT</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="container-fluid w-75 mt-5 mb-4" id="header">
     <div class="row justify-content-around">
       <h1 class="col-lg-6 col-md-12 col-sm-12 text-lg-left text-md-center text-sm-center">Student Grade Table</h1>
-      <h3 class="col-lg-4 col-md-12 col-sm-12 text-lb-right text-md-center text-sm-center">Average Grade <span class="badge badge-secondary"></span></h3>
+      <h3 class="col-lg-4 col-md-12 col-sm-12 text-lg-right text-md-center text-sm-center">Average Grade <span class="badge badge-secondary"></span></h3>
     </div>
   </header>
   <div class="container">
-    <div class="row justify-content-around">
+    <div class="row">
       <div class="col-lg-8 col-md-12">
         <table class="table table-borderless" id="grades-table">
           <thead class="border-bottom">
             <th class="table-data" scope="col">Student Name</th>
             <th class="table-data" scope="col">Course</th>
             <th class="table-data" scope="col">Grade</th>
-            <th class="table-data" scope="col">Operations</th>
+            <th class="table-data text-center" scope="col">Operations</th>
           </thead>
           <tbody>
           </tbody>
@@ -53,7 +52,7 @@
               <input type="text" class="form-control" placeholder="Grade" name="grade">
             </div>
             <div class="input-group mb-3 justify-content-start">
-              <button type="submit" class="btn btn-success mr-4 col-3">Add</button>
+              <button type="submit" class="btn btn-outline-success mr-4 col-3">Add</button>
               <button type="reset" class="btn btn-outline-dark col-3">Cancel</button>
             </div>
           </div>
