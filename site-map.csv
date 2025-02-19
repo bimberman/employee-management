@@ -1,0 +1,22 @@
+id,parentId,name,lastName,position,
+100,,Steven,King,Chief Operating Officer,
+001,,Home Page,,
+002,001,Approach,Home Page,,/approach
+003,001,Programs,Home Page,,/programs
+004,001,About Us,Home Page,,/about_us
+005,001,Donate/Get Involved,Home Page,,/donate
+006,001,Vision and Mission,Home Page,,/vision_and_mission
+007,002,Conflict analysis,Approach,,/approach/conflict_analysis
+008,002,Mission,Approach,,/approach/mission
+009,002,Theory of change,Approach,,/approach/theory_of_change
+010,002,Programs,Approach,,/approach/programs
+011,003,Critical conversations,Programs,,/programs/critical_conversations
+012,003,Peace Tribe rising podcasts,Programs,,/programs/peace_tribe_rising_podcasts
+013,003,Newsletters,Programs,,/programs/newsletters
+014,003,Sweet Peace concerts,Programs,,/programs/sweet_peace_concerts
+015,003,Children’s book about peace,Programs,,/programs/children’s_book_about_peace
+016,004,Letter from the founder - I’m not sure that we need this,About Us,,/about_us/letter_from_the_founder_-_i’m_not_sure_that_we_need_this
+017,004,Governance model,About Us,,/about_us/governance_model
+018,004,Heart pod members,About Us,,/about_us/heart_pod_members
+019,004,Advisory board members,About Us,,/about_us/advisory_board_members
+020,004,Contact us,About Us,,/about_us/contact_us
