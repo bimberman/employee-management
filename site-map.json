@@ -1,5 +1,4 @@
 [
-    [
   {
     "id": "002",
     "parentId": "001",
@@ -133,6 +132,4 @@
     "parent": "About Us",
     "url": "/about_us/contact_us"
   }
-]
-
  ]
