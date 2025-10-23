@@ -3,53 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SGT</title>
+  <title>Employee Management System</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
 </head>
 <body>
   <header class="container-fluid w-75 mt-5 mb-4" id="header">
     <div class="row justify-content-around">
-      <h1 class="col-lg-6 col-md-12 col-sm-12 text-lg-left text-md-center text-sm-center">Student Grade Table</h1>
-      <h3 class="col-lg-4 col-md-12 col-sm-12 text-lg-right text-md-center text-sm-center">Average Grade <span class="badge badge-secondary"></span></h3>
+      <h1 class="col-lg-6 col-md-12 col-sm-12 text-lg-left text-md-center text-sm-center">Employee Management</h1>
+      <h3 class="col-lg-4 col-md-12 col-sm-12 text-lg-right text-md-center text-sm-center">Total Employees <span class="badge badge-secondary"></span></h3>
     </div>
   </header>
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-12">
-        <table class="table table-borderless" id="grades-table">
+        <table class="table table-borderless" id="employees-table">
           <thead class="border-bottom">
-            <th class="table-data" scope="col">Student Name</th>
-            <th class="table-data" scope="col">Course</th>
-            <th class="table-data" scope="col">Grade</th>
+            <th class="table-data" scope="col">Employee Name</th>
+            <th class="table-data" scope="col">Position</th>
+            <th class="table-data" scope="col">Department</th>
+            <th class="table-data" scope="col">Salary</th>
             <th class="table-data text-center" scope="col">Operations</th>
           </thead>
           <tbody>
           </tbody>
         </table>
-        <p class="d-none" id="hidden-pEle">No Grades Recorded</p>
+        <p class="d-none" id="hidden-pEle">No Employees Recorded</p>
       </div>
       <div class="col-lg-4 col-md-12">
-        <h2 class="text-lg-left text-md-center text-sm-center">Add Grade</h2>
+        <h2 class="text-lg-left text-md-center text-sm-center">Add Employee</h2>
         <form id="form">
           <div class="form-group">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <i class="input-group-text fas fa-user" aria-hidden="true" style="font-size: 1.4rem;"></i>
               </div>
-              <input type="text" class="form-control" placeholder="Name" name="name">
+              <input type="text" class="form-control" placeholder="First Name" name="name">
             </div>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <i class="input-group-text fas fa-list-alt" aria-hidden="true" style="font-size: 1.3rem;"></i>
+                <i class="input-group-text fas fa-user" aria-hidden="true" style="font-size: 1.4rem;"></i>
               </div>
-              <input type="text" class="form-control" placeholder="Course" name="course">
+              <input type="text" class="form-control" placeholder="Last Name" name="lastName">
             </div>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <i class="input-group-text fas fa-graduation-cap" aria-hidden="true" style="font-size: 1.1rem;"></i>
+                <i class="input-group-text fas fa-briefcase" aria-hidden="true" style="font-size: 1.3rem;"></i>
               </div>
-              <input type="text" class="form-control" placeholder="Grade" name="grade">
+              <input type="text" class="form-control" placeholder="Position" name="position">
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <i class="input-group-text fas fa-building" aria-hidden="true" style="font-size: 1.1rem;"></i>
+              </div>
+              <input type="text" class="form-control" placeholder="Department" name="department_name">
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <i class="input-group-text fas fa-dollar-sign" aria-hidden="true" style="font-size: 1.1rem;"></i>
+              </div>
+              <input type="number" class="form-control" placeholder="Salary" name="salary">
             </div>
             <div class="input-group mb-3 justify-content-start">
               <button type="submit" class="btn btn-outline-success mr-4 col-3">Add</button>
@@ -60,11 +73,10 @@
       </div>
     </div>
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
   <script src="./components/app.js"></script>
-  <script src="./components/grade-table.js"></script>
+  <script src="./components/employee-table.js"></script>
   <script src="./components/page-header.js"></script>
-  <script src="./components/grade-form.js"></script>
+  <script src="./components/employee-form.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

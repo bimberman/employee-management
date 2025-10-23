@@ -1,170 +1,167 @@
 class App {
-  constructor(gradeTable, pageHeader, gradeForm){
-    this.baseUrl = "https://sgt.lfzprototypes.com/";
-    this.path = "api/grades/";
-    this.apikey = "GFaE89M3";
-    this.gradeTable = gradeTable;
+  constructor(employeeTable, pageHeader, employeeForm){
+    this.employeeTable = employeeTable;
     this.pageHeader = pageHeader;
-    this.gradeForm = gradeForm;
-    this.grades = [];
+    this.employeeForm = employeeForm;
+    this.employees = [];
+    this.nextId = 1000; // Starting ID for new employees (using higher number to avoid conflicts)
 
-    this.computeAvg = this.computeAvg.bind(this);
-    this.editGrade = this.editGrade.bind(this);
-
-    this.getGrades = this.getGrades.bind(this);
-    this.handleGetGradesError = this.handleGetGradesError.bind(this);
-    this.handleGetGradesSuccess = this.handleGetGradesSuccess.bind(this);
-
-    this.createGrade = this.createGrade.bind(this);
-    this.handleCreateGradeError = this.handleCreateGradeError.bind(this);
-    this.handleCreateGradeSuccess = this.handleCreateGradeSuccess.bind(this);
-
-    this.deleteGrade = this.deleteGrade.bind(this);
-    this.handleDeleteGradeError = this.handleDeleteGradeError.bind(this);
-    this.handleDeleteGradeSuccess = this.handleDeleteGradeSuccess.bind(this);
-
-    this.updateGrade = this.updateGrade.bind(this);
-    this.handleUpdateGradeError = this.handleUpdateGradeError.bind(this);
-    this.handleUpdateGradeSuccess = this.handleUpdateGradeSuccess.bind(this);
+    this.computeEmployeeCount = this.computeEmployeeCount.bind(this);
+    this.editEmployee = this.editEmployee.bind(this);
+    this.getEmployees = this.getEmployees.bind(this);
+    this.createEmployee = this.createEmployee.bind(this);
+    this.deleteEmployee = this.deleteEmployee.bind(this);
+    this.updateEmployee = this.updateEmployee.bind(this);
   }
 
   start() {
-    this.getGrades();
-    this.gradeForm.onSubmit(this.createGrade);
-    this.gradeForm.onUpdate(this.updateGrade);
-    this.gradeTable.onDeleteClick(this.deleteGrade);
-    this.gradeTable.onEditClick(this.editGrade);
+    this.getEmployees();
+    this.employeeForm.onSubmit(this.createEmployee);
+    this.employeeForm.onUpdate(this.updateEmployee);
+    this.employeeTable.onDeleteClick(this.deleteEmployee);
+    this.employeeTable.onEditClick(this.editEmployee);
   }
-  computeAvg(gradesObj) {
-    let grades = 0;
-    let i = 0
-    if (gradesObj) {
-      while (gradesObj[i]) {
-        grades += Number(gradesObj[i].grade);
-        i++;
-      }
-    }
-    return grades / i;
+  computeEmployeeCount(employeesObj) {
+    return employeesObj ? employeesObj.length : 0;
   }
-  editGrade(name, course, grade, id){
-    this.gradeForm.editGradeForm(name, course, grade, id);
+  editEmployee(name, lastName, position, department_name, salary, id){
+    this.employeeForm.editEmployeeForm(name, lastName, position, department_name, salary, id);
   }
-  addAllGrades(grades){
-    this.grades = grades;
+  addAllEmployees(employees){
+    this.employees = employees;
   }
-  addAGrade(grade){
-    this.grades.push(grade);
+  addAEmployee(employee){
+    this.employees.push(employee);
   }
-  deleteAGrade(id){
-    if(this.grades){
-      for (let i = 0; i < this.grades.length; i++) {
-        if(this.grades[i].id===id){
-          this.grades.splice(i,1);
+  deleteAEmployee(id){
+    if(this.employees){
+      for (let i = 0; i < this.employees.length; i++) {
+        if(this.employees[i].id == id){
+          this.employees.splice(i,1);
         }
       }
     }
   }
-  updateAGrade(name, course, grade, id){
-    if (this.grades) {
-      for (let i = 0; i < this.grades.length; i++) {
-        if (this.grades[i].id === id) {
-          this.grades[i].name = name;
-          this.grades[i].course = course;
-          this.grades[i].grade = grade;
+  updateAEmployee(name, lastName, position, department_name, salary, id){
+    if (this.employees) {
+      for (let i = 0; i < this.employees.length; i++) {
+        if (this.employees[i].id == id) {
+          this.employees[i].name = name;
+          this.employees[i].lastName = lastName;
+          this.employees[i].position = position;
+          this.employees[i].department_name = department_name;
+          this.employees[i].salary = salary;
         }
       }
     }
   }
 
-  getGrades() {
-    $.ajax({
-      url: this.baseUrl + this.path,
-      method: "GET",
-      headers: {
-        "X-Access-Token": this.apikey
-      },
-      success: this.handleGetGradesSuccess,
-      error: this.handleGetGradesError
-    })
-  }
-  handleGetGradesError (error){
-    console.error(error);
-  }
-  handleGetGradesSuccess (grades){
-    this.addAllGrades(grades);
-    this.gradeTable.updateGrades(grades);
-    this.pageHeader.updateAverage(this.computeAvg(grades));
-  }
-
-  createGrade(name, course, grade) {
-    $.ajax({
-      url: this.baseUrl + this.path,
-      method: "POST",
-      headers: {
-        "X-Access-Token": this.apikey
-      },
-      data: {
-        "name": name,
-        "course": course,
-        "grade": grade
-      },
-      success: this.handleCreateGradeSuccess,
-      error: this.handleCreateGradeError
-    })
-  }
-  handleCreateGradeError(error){
-    console.error(error);
-  }
-  handleCreateGradeSuccess(grade){
-    this.addAGrade(grade);
-    this.gradeTable.updateGrades(this.grades);
-    this.pageHeader.updateAverage(this.computeAvg(this.grades));
+  getEmployees() {
+    // Load employees from PostgreSQL database via API
+    fetch('/api/employees')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(employees => {
+        this.addAllEmployees(employees);
+        this.employeeTable.updateEmployees(employees);
+        this.pageHeader.updateEmployeeCount(this.computeEmployeeCount(employees));
+      })
+      .catch(error => {
+        console.error('Error loading employees:', error);
+        // Fallback to empty array if API can't be reached
+        this.addAllEmployees([]);
+        this.employeeTable.updateEmployees([]);
+        this.pageHeader.updateEmployeeCount(0);
+      });
   }
 
-  deleteGrade(id){
-    this.id = id;
-    $.ajax({
-      url: this.baseUrl + this.path + id,
-      method: "DELETE",
+  createEmployee(name, lastName, position, department_name, salary) {
+    // Create new employee via API
+    fetch('/api/employees', {
+      method: 'POST',
       headers: {
-        "X-Access-Token": this.apikey
+        'Content-Type': 'application/json',
       },
-      success: this.handleDeleteGradeSuccess,
-      error: this.handleDeleteGradeError
+      body: JSON.stringify({
+        name: name,
+        lastName: lastName,
+        position: position,
+        department_name: department_name,
+        salary: parseInt(salary)
+      })
     })
-  }
-  handleDeleteGradeError(error){
-    console.error(error);
-  }
-  handleDeleteGradeSuccess(){
-    this.deleteAGrade(this.id);
-    this.id = null;
-    this.gradeTable.updateGrades(this.grades);
-    this.pageHeader.updateAverage(this.computeAvg(this.grades));
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(newEmployee => {
+      this.addAEmployee(newEmployee);
+      this.employeeTable.updateEmployees(this.employees);
+      this.pageHeader.updateEmployeeCount(this.computeEmployeeCount(this.employees));
+    })
+    .catch(error => {
+      console.error('Error creating employee:', error);
+      alert('Failed to create employee. Please try again.');
+    });
   }
 
-  updateGrade(name, course, grade, id) {
-    $.ajax({
-      url: this.baseUrl + this.path + id,
-      method: "PATCH",
-      headers: {
-        "X-Access-Token": this.apikey
-      },
-      data: {
-        "name": name,
-        "course": course,
-        "grade": grade
-      },
-      success: this.handleUpdateGradeSuccess,
-      error: this.handleUpdateGradeError
+  deleteEmployee(id){
+    // Delete employee via API
+    fetch(`/api/employees/${id}`, {
+      method: 'DELETE'
     })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(() => {
+      this.deleteAEmployee(id);
+      this.employeeTable.updateEmployees(this.employees);
+      this.pageHeader.updateEmployeeCount(this.computeEmployeeCount(this.employees));
+    })
+    .catch(error => {
+      console.error('Error deleting employee:', error);
+      alert('Failed to delete employee. Please try again.');
+    });
   }
-  handleUpdateGradeError(error) {
-    console.error(error);
-  }
-  handleUpdateGradeSuccess(grade) {
-    this.updateAGrade(grade.name, grade.course, grade.grade, grade.id);
-    this.gradeTable.updateGrades(this.grades);
-    this.pageHeader.updateAverage(this.computeAvg(this.grades));
+
+  updateEmployee(name, lastName, position, department_name, salary, id) {
+    // Update employee via API
+    fetch(`/api/employees/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name,
+        lastName: lastName,
+        position: position,
+        department_name: department_name,
+        salary: parseInt(salary)
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(updatedEmployee => {
+      this.updateAEmployee(name, lastName, position, department_name, salary, id);
+      this.employeeTable.updateEmployees(this.employees);
+      this.pageHeader.updateEmployeeCount(this.computeEmployeeCount(this.employees));
+    })
+    .catch(error => {
+      console.error('Error updating employee:', error);
+      alert('Failed to update employee. Please try again.');
+    });
   }
 }
