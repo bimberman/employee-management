@@ -62,7 +62,9 @@ async function migrateData() {
         employee.parentId && employee.parentId !== ''
           ? parseInt(employee.parentId)
           : null,
-        employee.department_id,
+        employee.department_id && employee.department_id !== ''
+          ? parseInt(employee.department_id)
+          : null,
         employee.image,
       ];
 
