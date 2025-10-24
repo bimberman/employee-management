@@ -58,7 +58,7 @@ async function migrateData() {
         new Date(employee.hire_date),
         employee.job_id,
         employee.salary,
-        employee.commission_pct && employee.commission_pct !== "" ? parseFloat(employee.commission_pct) : null,
+        null,
         employee.parentId && employee.parentId !== "" ? parseInt(employee.parentId) : null,
         employee.department_id,
         employee.image

@@ -1,7 +1,7 @@
 [
   {
     "id": 100,
-    "parentId": "",
+    "parentId": null,
     "name": "Steven",
     "lastName": "King",
     "position": "Chief Operating Officer",
