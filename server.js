@@ -24,29 +24,33 @@ app.use(express.static('.'));
 function convertEmployeeToFrontend(dbEmployee) {
   return {
     id: dbEmployee.employee_id,
-    parentId: dbEmployee.manager_id || "",
+    parentId: dbEmployee.manager_id || '',
     name: dbEmployee.first_name,
     lastName: dbEmployee.last_name,
-    position: dbEmployee.job_title || "",
-    image: dbEmployee.image_url || "https://bumbeishvili.github.io/avatars/avatars/portrait1.png",
+    position: dbEmployee.job_title || '',
+    image:
+      dbEmployee.image_url ||
+      'https://bumbeishvili.github.io/avatars/avatars/portrait1.png',
     email: dbEmployee.email,
-    phone_number: dbEmployee.phone_number || "",
-    hire_date: dbEmployee.hire_date ? new Date(dbEmployee.hire_date).toISOString() : new Date().toISOString(),
-    job_id: dbEmployee.job_id || "",
+    phone_number: dbEmployee.phone_number || '',
+    hire_date: dbEmployee.hire_date
+      ? new Date(dbEmployee.hire_date).toISOString()
+      : new Date().toISOString(),
+    job_id: dbEmployee.job_id || '',
     salary: dbEmployee.salary || 0,
-    commission_pct: dbEmployee.commission_pct || "",
+    commission_pct: dbEmployee.commission_pct || '',
     department_id: dbEmployee.department_id || 0,
     job_min_salary: dbEmployee.min_salary || 0,
-    location_state: dbEmployee.state_province || "",
+    location_state: dbEmployee.state_province || '',
     job_max_salary: dbEmployee.max_salary || 0,
-    department_name: dbEmployee.department_name || "",
+    department_name: dbEmployee.department_name || '',
     department_location_id: dbEmployee.location_id || 0,
-    department_location_street_address: dbEmployee.street_address || "",
+    department_location_street_address: dbEmployee.street_address || '',
     department_location_postal_code: dbEmployee.postal_code || 0,
-    department_location_country_id: dbEmployee.country_id || "",
-    department_location_country_name: dbEmployee.country_name || "",
+    department_location_country_id: dbEmployee.country_id || '',
+    department_location_country_name: dbEmployee.country_name || '',
     department_location_country_region_id: dbEmployee.region_id || 0,
-    department_location_country_region_name: dbEmployee.region_name || ""
+    department_location_country_region_name: dbEmployee.region_name || '',
   };
 }
 
@@ -77,7 +81,7 @@ app.get('/api/employees', async (req, res) => {
       LEFT JOIN regions r ON c.region_id = r.region_id
       ORDER BY e.employee_id
     `;
-    
+
     const result = await pool.query(query);
     const employees = result.rows.map(convertEmployeeToFrontend);
     res.json(employees);
@@ -113,12 +117,12 @@ app.get('/api/employees/:id', async (req, res) => {
       LEFT JOIN regions r ON c.region_id = r.region_id
       WHERE e.employee_id = $1
     `;
-    
+
     const result = await pool.query(query, [id]);
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Employee not found' });
     }
-    
+
     const employee = convertEmployeeToFrontend(result.rows[0]);
     res.json(employee);
   } catch (error) {
@@ -131,19 +135,29 @@ app.get('/api/employees/:id', async (req, res) => {
 app.post('/api/employees', async (req, res) => {
   try {
     const { name, lastName, position, department_name, salary } = req.body;
-    
+
     // Get next available ID
-    const idResult = await pool.query('SELECT MAX(employee_id) as max_id FROM employees');
+    const idResult = await pool.query(
+      'SELECT MAX(employee_id) as max_id FROM employees'
+    );
     const nextId = (idResult.rows[0].max_id || 0) + 1;
-    
+
     // Find job_id for the position (simplified - you might want to improve this)
-    const jobQuery = await pool.query('SELECT job_id FROM jobs WHERE job_title ILIKE $1 LIMIT 1', [`%${position}%`]);
-    const jobId = jobQuery.rows.length > 0 ? jobQuery.rows[0].job_id : 'AD_ASST';
-    
+    const jobQuery = await pool.query(
+      'SELECT job_id FROM jobs WHERE job_title ILIKE $1 LIMIT 1',
+      [`%${position}%`]
+    );
+    const jobId =
+      jobQuery.rows.length > 0 ? jobQuery.rows[0].job_id : 'AD_ASST';
+
     // Find department_id for the department_name
-    const deptQuery = await pool.query('SELECT department_id FROM departments WHERE department_name ILIKE $1 LIMIT 1', [`%${department_name}%`]);
-    const departmentId = deptQuery.rows.length > 0 ? deptQuery.rows[0].department_id : 10;
-    
+    const deptQuery = await pool.query(
+      'SELECT department_id FROM departments WHERE department_name ILIKE $1 LIMIT 1',
+      [`%${department_name}%`]
+    );
+    const departmentId =
+      deptQuery.rows.length > 0 ? deptQuery.rows[0].department_id : 10;
+
     const query = `
       INSERT INTO employees (
         employee_id, first_name, last_name, email, phone_number, 
@@ -152,7 +166,7 @@ app.post('/api/employees', async (req, res) => {
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING *
     `;
-    
+
     const values = [
       nextId,
       name,
@@ -165,9 +179,9 @@ app.post('/api/employees', async (req, res) => {
       null,
       null,
       departmentId,
-      "https://bumbeishvili.github.io/avatars/avatars/portrait1.png"
+      'https://bumbeishvili.github.io/avatars/avatars/portrait1.png',
     ];
-    
+
     const result = await pool.query(query, values);
     const newEmployee = convertEmployeeToFrontend(result.rows[0]);
     res.status(201).json(newEmployee);
@@ -182,28 +196,43 @@ app.put('/api/employees/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { name, lastName, position, department_name, salary } = req.body;
-    
+
     // Find job_id for the position
-    const jobQuery = await pool.query('SELECT job_id FROM jobs WHERE job_title ILIKE $1 LIMIT 1', [`%${position}%`]);
-    const jobId = jobQuery.rows.length > 0 ? jobQuery.rows[0].job_id : 'AD_ASST';
-    
+    const jobQuery = await pool.query(
+      'SELECT job_id FROM jobs WHERE job_title ILIKE $1 LIMIT 1',
+      [`%${position}%`]
+    );
+    const jobId =
+      jobQuery.rows.length > 0 ? jobQuery.rows[0].job_id : 'AD_ASST';
+
     // Find department_id for the department_name
-    const deptQuery = await pool.query('SELECT department_id FROM departments WHERE department_name ILIKE $1 LIMIT 1', [`%${department_name}%`]);
-    const departmentId = deptQuery.rows.length > 0 ? deptQuery.rows[0].department_id : 10;
-    
+    const deptQuery = await pool.query(
+      'SELECT department_id FROM departments WHERE department_name ILIKE $1 LIMIT 1',
+      [`%${department_name}%`]
+    );
+    const departmentId =
+      deptQuery.rows.length > 0 ? deptQuery.rows[0].department_id : 10;
+
     const query = `
       UPDATE employees 
       SET first_name = $1, last_name = $2, job_id = $3, salary = $4, department_id = $5
       WHERE employee_id = $6
       RETURNING *
     `;
-    
-    const result = await pool.query(query, [name, lastName, jobId, parseInt(salary), departmentId, id]);
-    
+
+    const result = await pool.query(query, [
+      name,
+      lastName,
+      jobId,
+      parseInt(salary),
+      departmentId,
+      id,
+    ]);
+
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Employee not found' });
     }
-    
+
     const updatedEmployee = convertEmployeeToFrontend(result.rows[0]);
     res.json(updatedEmployee);
   } catch (error) {
@@ -218,11 +247,11 @@ app.delete('/api/employees/:id', async (req, res) => {
     const { id } = req.params;
     const query = 'DELETE FROM employees WHERE employee_id = $1 RETURNING *';
     const result = await pool.query(query, [id]);
-    
+
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Employee not found' });
     }
-    
+
     res.json({ message: 'Employee deleted successfully' });
   } catch (error) {
     console.error('Error deleting employee:', error);
@@ -236,7 +265,13 @@ app.get('/api/health', async (req, res) => {
     await pool.query('SELECT 1');
     res.json({ status: 'OK', database: 'connected' });
   } catch (error) {
-    res.status(500).json({ status: 'ERROR', database: 'disconnected', error: error.message });
+    res
+      .status(500)
+      .json({
+        status: 'ERROR',
+        database: 'disconnected',
+        error: error.message,
+      });
   }
 });
 

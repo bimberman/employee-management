@@ -11,7 +11,9 @@ if (!fs.existsSync('.env')) {
   console.log('📝 Creating .env file from template...');
   if (fs.existsSync('env.example')) {
     fs.copyFileSync('env.example', '.env');
-    console.log('✓ .env file created. Please edit it with your database credentials.');
+    console.log(
+      '✓ .env file created. Please edit it with your database credentials.'
+    );
   } else {
     console.log('❌ env.example file not found. Please create .env manually.');
   }
@@ -50,5 +52,7 @@ try {
   console.log('   - PostgreSQL is installed and running');
   console.log('   - Database credentials in .env are correct');
   console.log('   - Database user has proper permissions');
-  console.log('\nYou can still run the migration manually with: npm run migrate');
+  console.log(
+    '\nYou can still run the migration manually with: npm run migrate'
+  );
 }

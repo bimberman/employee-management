@@ -1,8 +1,8 @@
-class PageHeader{
-  constructor(headerElement){
+class PageHeader {
+  constructor(headerElement) {
     this.headerElement = headerElement;
   }
-  updateEmployeeCount(employeeCount){
-    this.headerElement.querySelector(".badge").textContent = employeeCount;
+  updateEmployeeCount(employeeCount) {
+    this.headerElement.querySelector('.badge').textContent = employeeCount;
   }
 }
