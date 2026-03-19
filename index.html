@@ -3,20 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee Management System</title>
+  <title>Employee Management System - Hot Reload Test</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
 </head>
 <body>
-  <header class="container-fluid w-75 mt-5 mb-4" id="header">
-    <div class="row justify-content-around">
-      <h1 class="col-lg-6 col-md-12 col-sm-12 text-lg-left text-md-center text-sm-center">Employee Management</h1>
-      <h3 class="col-lg-4 col-md-12 col-sm-12 text-lg-right text-md-center text-sm-center">Total Employees <span class="badge badge-secondary"></span></h3>
-    </div>
-  </header>
-  <div class="container">
+  <div class="container-fluid mt-5 mb-4" id="header">
     <div class="row">
-      <div class="col-lg-8 col-md-12">
+      <div class="col-lg-8 col-md-12 order-2 order-md-1 order-lg-1">
+        <h1 class="text-center mb-4">Employee Management</h1>
         <table class="table table-borderless" id="employees-table">
           <thead class="border-bottom">
             <th class="table-data" scope="col">Employee Name</th>
@@ -30,41 +25,42 @@
         </table>
         <p class="d-none" id="hidden-pEle">No Employees Recorded</p>
       </div>
-      <div class="col-lg-4 col-md-12">
-        <h2 class="text-lg-left text-md-center text-sm-center">Add Employee</h2>
+      <div class="col-lg-4 col-md-12 order-1 order-md-2 order-lg-2">
+        <h3 class="text-center mb-4">Total Employees <span class="badge badge-secondary"></span></h3>
+        <h2 class="text-center mb-3 mt-4">Add Employee</h2>
         <form id="form">
           <div class="form-group">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <i class="input-group-text fas fa-user" aria-hidden="true" style="font-size: 1.4rem;"></i>
+                <i class="input-group-text fas fa-user" aria-hidden="true" style="font-size: 1.2rem; width: 2.5rem; text-align: center;"></i>
               </div>
               <input type="text" class="form-control" placeholder="First Name" name="name">
             </div>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <i class="input-group-text fas fa-user" aria-hidden="true" style="font-size: 1.4rem;"></i>
+                <i class="input-group-text fas fa-user" aria-hidden="true" style="font-size: 1.2rem; width: 2.5rem; text-align: center;"></i>
               </div>
               <input type="text" class="form-control" placeholder="Last Name" name="lastName">
             </div>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <i class="input-group-text fas fa-briefcase" aria-hidden="true" style="font-size: 1.3rem;"></i>
+                <i class="input-group-text fas fa-briefcase" aria-hidden="true" style="font-size: 1.2rem; width: 2.5rem; text-align: center;"></i>
               </div>
               <input type="text" class="form-control" placeholder="Position" name="position">
             </div>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <i class="input-group-text fas fa-building" aria-hidden="true" style="font-size: 1.1rem;"></i>
+                <i class="input-group-text fas fa-building" aria-hidden="true" style="font-size: 1.2rem; width: 2.5rem; text-align: center;"></i>
               </div>
               <input type="text" class="form-control" placeholder="Department" name="department_name">
             </div>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <i class="input-group-text fas fa-dollar-sign" aria-hidden="true" style="font-size: 1.1rem;"></i>
+                <i class="input-group-text fas fa-dollar-sign" aria-hidden="true" style="font-size: 1.2rem; width: 2.5rem; text-align: center;"></i>
               </div>
               <input type="number" class="form-control" placeholder="Salary" name="salary">
             </div>
-            <div class="input-group mb-3 justify-content-start">
+            <div class="input-group mb-3 justify-content-center">
               <button type="submit" class="btn btn-outline-success mr-4 col-3">Add</button>
               <button type="reset" class="btn btn-outline-dark col-3">Cancel</button>
             </div>
@@ -78,5 +74,42 @@
   <script src="./components/page-header.js"></script>
   <script src="./components/employee-form.js"></script>
   <script src="main.js"></script>
+  
+  <!-- Live reload for development -->
+  <script>
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      // Simple file watcher for development
+      let lastModified = Date.now();
+      
+      function checkForChanges() {
+        fetch(window.location.href + '?t=' + Date.now())
+          .then(response => response.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const scripts = doc.querySelectorAll('script[src]');
+            const currentScripts = document.querySelectorAll('script[src]');
+            
+            if (scripts.length !== currentScripts.length) {
+              location.reload();
+              return;
+            }
+            
+            for (let i = 0; i < scripts.length; i++) {
+              if (scripts[i].src !== currentScripts[i].src) {
+                location.reload();
+                return;
+              }
+            }
+          })
+          .catch(() => {
+            // Ignore errors, just retry
+          });
+      }
+      
+      // Check for changes every 2 seconds
+      setInterval(checkForChanges, 2000);
+    }
+  </script>
 </body>
 </html>

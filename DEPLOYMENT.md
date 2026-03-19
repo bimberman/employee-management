@@ -1,179 +1,138 @@
 # Employee Management System - EC2 Deployment Guide
 
-## Prerequisites
-- EC2 instance running Ubuntu 20.04+ or Amazon Linux 2
-- SSH access to your EC2 instance
-- Domain name (optional, for SSL)
+## Deployment Scenarios
+### 🆕 [Brand New Deployment](#brand-new-deployment)
+For first-time deployment on a fresh EC2 instance.
+### 🔄 [Existing Deployment Update](#existing-deployment-update)
+For updating an already deployed application.
 
-## Step 1: Prepare Your Local Environment
+---
 
-1. **Commit your changes:**
-   ```bash
-   git add .
-   git commit -m "Add deployment configuration"
-   git push origin main
+## 🆕 Brand New Deployment
+
+### Step 1: Launch EC2 Instance
+1. Go to AWS Console → EC2 → Launch Instance
+2. Configure:
+   - **Name:** employee-management-server
+   - **AMI:** Ubuntu Server 22.04 LTS (Free tier eligible)
+   - **Instance Type:** t3.micro (2 vCPUs, 1 GB RAM) - **FREE TIER ELIGIBLE**
+   - **Key Pair:** Create new or use existing (download .pem file)
+   - **Storage:** 8 GB GP2 (Free tier eligible)
+   - **Security Group:** Create new security group
+
+3. **Security Group Rules:**
+   ```
+   Type: SSH, Protocol: TCP, Port: 22, Source: My IP
+   Type: HTTP, Protocol: TCP, Port: 80, Source: 0.0.0.0/0
+   Type: HTTPS, Protocol: TCP, Port: 443, Source: 0.0.0.0/0
    ```
 
-2. **Create a deployment package:**
-   ```bash
-   # Create a deployment archive (excluding node_modules and .env)
-   tar -czf employee-management.tar.gz \
-     --exclude=node_modules \
-     --exclude=.env \
-     --exclude=.git \
-     --exclude=*.log \
-     .
-   ```
+### Step 2: Allocate Elastic IP
+1. Go to AWS Console → EC2 → Elastic IPs
+2. Click "Allocate Elastic IP address"
+3. Associate with your EC2 instance
 
-## Step 2: Set Up EC2 Instance
-
-1. **Connect to your EC2 instance:**
-   ```bash
-   ssh -i your-key.pem ubuntu@your-ec2-ip
-   ```
-
-2. **Run the deployment script:**
-   ```bash
-   # Upload and run the deployment script
-   chmod +x deploy.sh
-   ./deploy.sh
-   ```
-
-## Step 3: Configure PostgreSQL
-
-1. **Switch to postgres user and create database:**
-   ```bash
-   sudo -u postgres psql
-   ```
-
-2. **In PostgreSQL shell:**
-   ```sql
-   CREATE DATABASE employee_management;
-   CREATE USER employee_user WITH PASSWORD 'your_secure_password';
-   GRANT ALL PRIVILEGES ON DATABASE employee_management TO employee_user;
-   \q
-   ```
-
-3. **Configure PostgreSQL for remote connections (if needed):**
-   ```bash
-   sudo nano /etc/postgresql/*/main/postgresql.conf
-   # Uncomment and set: listen_addresses = 'localhost'
-   
-   sudo nano /etc/postgresql/*/main/pg_hba.conf
-   # Add: local   all             employee_user                    md5
-   ```
-
-4. **Restart PostgreSQL:**
-   ```bash
-   sudo systemctl restart postgresql
-   ```
-
-## Step 4: Deploy Application Code
-
-1. **Upload your code to EC2:**
-   ```bash
-   # From your local machine
-   scp -i your-key.pem employee-management.tar.gz ubuntu@your-ec2-ip:/tmp/
-   ```
-
-2. **On EC2, extract and set up:**
-   ```bash
-   cd /var/www/employee-management
-   tar -xzf /tmp/employee-management.tar.gz
-   npm install --production
-   ```
-
-3. **Set up environment variables:**
-   ```bash
-   cp env.production.template .env
-   nano .env  # Edit with your actual values
-   ```
-
-4. **Run database migration:**
-   ```bash
-   npm run migrate
-   ```
-
-## Step 5: Configure Nginx
-
-1. **Copy Nginx configuration:**
-   ```bash
-   sudo cp nginx.conf /etc/nginx/sites-available/employee-management
-   sudo ln -s /etc/nginx/sites-available/employee-management /etc/nginx/sites-enabled/
-   sudo rm /etc/nginx/sites-enabled/default
-   ```
-
-2. **Update server name in config:**
-   ```bash
-   sudo nano /etc/nginx/sites-available/employee-management
-   # Replace 'your-domain.com' with your actual domain or EC2 public IP
-   ```
-
-3. **Test and restart Nginx:**
-   ```bash
-   sudo nginx -t
-   sudo systemctl restart nginx
-   ```
-
-## Step 6: Start Application with PM2
-
-1. **Start the application:**
-   ```bash
-   cd /var/www/employee-management
-   pm2 start ecosystem.config.js --env production
-   pm2 save
-   pm2 startup
-   ```
-
-2. **Verify application is running:**
-   ```bash
-   pm2 status
-   pm2 logs employee-management
-   ```
-
-## Step 7: Configure Firewall
-
+### Step 3: Connect to EC2
 ```bash
-# Allow HTTP and HTTPS traffic
-sudo ufw allow 80
-sudo ufw allow 443
-sudo ufw allow 22  # SSH
-sudo ufw enable
+ssh -i your-key.pem ubuntu@your-elastic-ip
 ```
 
-## Step 8: Set Up SSL (Optional but Recommended)
+### Step 4: Run Deployment Script
+```bash
+# Upload the deployment script
+scp -i your-key.pem deploy.sh ubuntu@your-elastic-ip:/home/ubuntu/
+scp -i your-key.pem config.env ubuntu@your-elastic-ip:/home/ubuntu/
 
-1. **Install Certbot:**
-   ```bash
-   sudo apt install certbot python3-certbot-nginx -y
-   ```
+# On EC2, run the deployment
+chmod +x deploy.sh
+./deploy.sh
+```
 
-2. **Get SSL certificate:**
-   ```bash
-   sudo certbot --nginx -d your-domain.com -d www.your-domain.com
-   ```
+### Step 5: Test Application
+```bash
+# Test locally
+curl http://localhost:3000/api/health
 
-## Step 9: Monitor and Maintain
+# Test externally
+curl http://your-elastic-ip/api/health
+```
 
-1. **Check application status:**
-   ```bash
-   pm2 status
-   pm2 logs employee-management
-   ```
+---
 
-2. **Restart application if needed:**
-   ```bash
-   pm2 restart employee-management
-   ```
+## 🔄 Existing Deployment Update
 
-3. **Update application:**
-   ```bash
-   # Pull latest changes
-   git pull origin main
-   npm install --production
-   npm run migrate  # If database changes
-   pm2 restart employee-management
-   ```
+### Step 1: Connect to EC2
+```bash
+ssh -i your-key.pem ubuntu@your-elastic-ip
+```
+
+### Step 2: Update Application Code
+```bash
+cd /var/www/employee-management
+
+# Pull latest changes
+git pull origin main
+
+# Install any new dependencies
+npm install --production
+
+# Run database migrations (if any)
+npm run migrate
+
+# Restart application
+pm2 restart employee-management
+```
+
+### Step 3: Test Application
+```bash
+# Test locally
+curl http://localhost:3000/api/health
+
+# Test externally
+curl http://your-elastic-ip/api/health
+```
+
+---
+
+## Manual Deployment (Alternative)
+
+If you prefer to run commands manually:
+
+1. **Update system:** `sudo apt update && sudo apt upgrade -y`
+2. **Install Node.js:** `curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - && sudo apt-get install -y nodejs`
+3. **Install PostgreSQL:** `sudo apt install postgresql postgresql-contrib -y`
+4. **Install PM2:** `sudo npm install -g pm2`
+5. **Install Nginx:** `sudo apt install nginx -y`
+6. **Clone repository:** `git clone https://github.com/bimberman/employee-management.git /var/www/employee-management`
+7. **Install dependencies:** `cd /var/www/employee-management && npm install --production`
+8. **Set up database:** Follow the database setup steps in the script
+9. **Configure Nginx:** Copy nginx.conf to /etc/nginx/sites-available/
+10. **Start application:** `pm2 start ecosystem.config.js --env production`
+
+## Post-Deployment
+
+### Set Up Domain (Optional)
+1. Point `employee-management.benimberman.com` to your Elastic IP
+2. Update nginx.conf with your domain name
+3. Restart Nginx: `sudo systemctl restart nginx`
+
+### SSL Certificate (Optional)
+```bash
+sudo apt install certbot python3-certbot-nginx -y
+sudo certbot --nginx -d employee-management.benimberman.com
+```
+
+### Monitoring
+```bash
+# Check application status
+pm2 status
+
+# View logs
+pm2 logs employee-management
+
+# Restart application
+pm2 restart employee-management
+```
 
 ## Troubleshooting
 
@@ -198,10 +157,7 @@ sudo ufw enable
 2. **Use strong database passwords**
 3. **Enable firewall**
 4. **Set up SSL certificate**
-5. **Regular security updates:**
-   ```bash
-   sudo apt update && sudo apt upgrade -y
-   ```
+5. **Regular security updates:** `sudo apt update && sudo apt upgrade -y`
 
 ## Backup Strategy
 
@@ -214,3 +170,7 @@ sudo ufw enable
    ```bash
    tar -czf app-backup.tar.gz /var/www/employee-management
    ```
+
+---
+
+**🎉 CONGRATULATIONS!** Your employee management system should now be fully deployed and accessible at your Elastic IP address!
